@@ -30,10 +30,17 @@ namespace EmailFinder.Controllers
             return Json(false, JsonRequestBehavior.AllowGet);
         }
 
-        //TODO: Do obiektu verifyResult przypisać prawdziwą wartość IsValid
+        //TODO: Do obiektu verifyResult przypisać prawdziwą wartość IsValid, Random tylko chwilowy
         protected VerifyResult VerifyEmail(string email)
         {
             var verifyResult = new VerifyResult() {Email = email, Service = EmailDiscoveryService.VerifyEmail.ToString()};
+            //TEMP RANDOM
+            var rand = new Random(DateTime.Now.Millisecond).Next(0, int.MaxValue);
+            if (rand % 2 == 0)
+            {
+                verifyResult.IsValid = true;
+            }
+            //TEMP RANDOM
             Dictionary<string, string> dictResults = new Dictionary<string, string>();
             string apiUrl = "http://api.verify-email.org/api.php?";
             string apiUsername = "rmatyszewski";
@@ -100,13 +107,17 @@ namespace EmailFinder.Controllers
             return verifyResult;
         }
 
-        //TODO: Do obiektu verifyResult przypisać prawdziwą wartość IsValid
+        //TODO: Do obiektu verifyResult przypisać prawdziwą wartość IsValid, random tylko chwilowy
         protected VerifyResult MailboxLayer(string email)
         {
             var verifyResult = new VerifyResult() { Email = email, Service = EmailDiscoveryService.MailboxLayer.ToString() };
-            //TEMP
-            verifyResult.IsValid = true;
-            // temp
+            //TEMP RANDOM
+            var rand = new Random(DateTime.Now.Millisecond).Next(0, int.MaxValue);
+            if (rand %2 == 0)
+            {
+                verifyResult.IsValid = true;
+            }
+            //TEMP RANDOM
             string accessKey = "59a37991b326fe7201f628ea15f0347d";
             string apiUrl = "https://apilayer.net/api/check?";
             WebClient webClient;

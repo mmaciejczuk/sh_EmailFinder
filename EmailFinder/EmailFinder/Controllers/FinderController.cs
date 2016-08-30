@@ -30,29 +30,16 @@ namespace EmailFinder.Controllers
             return Json(false, JsonRequestBehavior.AllowGet);
         }
 
-        //TODO: Do obiektu verifyResult przypisać prawdziwą wartość IsValid, Random tylko chwilowy
+
         protected VerifyResult VerifyEmail(string email)
         {
             var verifyResult = new VerifyResult() {Email = email, Service = EmailDiscoveryService.VerifyEmail.ToString()};
-            //TEMP RANDOM
-            var rand = new Random(DateTime.Now.Millisecond).Next(0, int.MaxValue);
-            if (rand % 2 == 0)
-            {
-                verifyResult.IsValid = true;
-            }
-            //TEMP RANDOM
-            Dictionary<string, string> dictResults = new Dictionary<string, string>();
+
             string apiUrl = "http://api.verify-email.org/api.php?";
             string apiUsername = "rmatyszewski";
             string apiPassword = "jacekplacek";
-            string _key = "";
-            string _value = "";
-
-            string emailsVerified = "";
-            string emailsLimit = "";
 
             WebClient webClient;
-
             try
             {
                 using (webClient = new WebClient())
@@ -61,63 +48,23 @@ namespace EmailFinder.Controllers
                         JObject objJSON = default(JObject);
                         objJSON = JObject.Parse(result);
 
-                        //if (objJSON["limit_status"] != null)
-                        emailsVerified = "<strong>Emails Verified: </strong>" + (string.Format(objJSON["emails_verified"].ToString()));
+                        if (objJSON["verify_status"] != null)
+                        verifyResult.IsValid = (Convert.ToBoolean(Convert.ToInt32(objJSON["verify_status"].ToString())));
 
-                        //if (objJSON["limit_desc"] != null)
-                        emailsLimit = "<strong>Emails limit: </strong>" + (string.Format(objJSON["emails_limit"].ToString()));
-
-                        if (String.Format(objJSON["emails_limit"].ToString()) == String.Format(objJSON["emails_verified"].ToString()))
-                        {
-                            //LabelLimitStatus.Text = emailsVerified;
-                            //LabelLimitDesc.Text = emailsLimit;
-
-                            //GVVerifyEmail.DataSource = null;
-                            //GVVerifyEmail.DataBind();
-                            return verifyResult;
-                        }
-                        else
-                        {
-
-                            if (objJSON["verify_status"] != null && !dictResults.ContainsKey(email))
-                            {
-                                _key = string.Format(email);
-                                _value = string.Format(Convert.ToBoolean(Convert.ToInt32(objJSON["verify_status"].ToString())) ? "TRUE" : "FALSE");
-                                if (_value == "")
-                                    _value = "Limit reached";
-                                dictResults.Add(_key, _value);
-                                return verifyResult;
-                            }
-
-
-
-                        }
-                    
-                    //GVVerifyEmail.DataSource = dictResults;
-                    //GVVerifyEmail.DataBind();
-
-                    //LabelLimitStatus.Text = "<strong>Emails Verified: </strong>" + emailsVerified;
-                    //LabelLimitDesc.Text = "<strong>Emails limit: </strong>" + emailsLimit;
+                        return verifyResult;
                 }
             }
             catch (Exception e)
             {
                 return verifyResult;
             }
-            return verifyResult;
         }
 
-        //TODO: Do obiektu verifyResult przypisać prawdziwą wartość IsValid, random tylko chwilowy
+
         protected VerifyResult MailboxLayer(string email)
         {
             var verifyResult = new VerifyResult() { Email = email, Service = EmailDiscoveryService.MailboxLayer.ToString() };
-            //TEMP RANDOM
-            var rand = new Random(DateTime.Now.Millisecond).Next(0, int.MaxValue);
-            if (rand %2 == 0)
-            {
-                verifyResult.IsValid = true;
-            }
-            //TEMP RANDOM
+
             string accessKey = "59a37991b326fe7201f628ea15f0347d";
             string apiUrl = "https://apilayer.net/api/check?";
             WebClient webClient;
@@ -129,35 +76,16 @@ namespace EmailFinder.Controllers
                         JObject objJSON = default(JObject);
                         objJSON = JObject.Parse(result);
 
-                        if (objJSON["smtp_check"] != null)
-                        {
-                            //MailBoxer mb = new MailBoxer();
+                        if (objJSON["format_valid"] != null)
+                            verifyResult.IsValid = (Convert.ToBoolean(objJSON["format_valid"].ToString()));
 
-                            //if (objJSON["email"] != null)
-                            //    mb.email = (string.Format(objJSON["email"].ToString()));
-
-                            //if (objJSON["format_valid"] != null)
-                            //    mb.isValid = (string.Format(objJSON["format_valid"].ToString())).ToUpper();
-
-                            //li.Add(mb);
-                            //Variable.variable += 7;
-                            //Variable.counter += 1;
-
-                            //context.Clients.All.onHitRecorded2(Variable.counter, Variable.variable, mb.email, mb.isValid);
-                        }
-                        else
-                        {
-                            //GVMailBoxer.DataSource = null;
-                            //GVMailBoxer.DataBind();
-                            //break;
-                        }
+                    return verifyResult;
                 }
             }
             catch (Exception e)
             {
                 return verifyResult;
             }
-            return verifyResult;
         }
 
         protected List<string> GenerateEmails(string name, string surname, string domain)

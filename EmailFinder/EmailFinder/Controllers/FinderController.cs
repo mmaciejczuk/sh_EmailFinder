@@ -49,10 +49,9 @@ namespace EmailFinder.Controllers
                         objJSON = JObject.Parse(result);
 
                         if (objJSON["verify_status"] != null)
-                        verifyResult.IsValid = (Convert.ToBoolean(Convert.ToInt32(objJSON["verify_status"].ToString())));
-
-                        return verifyResult;
+                        verifyResult.IsValid = (Convert.ToBoolean(Convert.ToInt32(objJSON["verify_status"].ToString())));                        
                 }
+                return verifyResult;
             }
             catch (Exception e)
             {
@@ -77,10 +76,9 @@ namespace EmailFinder.Controllers
                         objJSON = JObject.Parse(result);
 
                         if (objJSON["format_valid"] != null)
-                            verifyResult.IsValid = (Convert.ToBoolean(objJSON["format_valid"].ToString()));
-
-                    return verifyResult;
+                            verifyResult.IsValid = (Convert.ToBoolean(objJSON["format_valid"].ToString()));                    
                 }
+                return verifyResult;
             }
             catch (Exception e)
             {

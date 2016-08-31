@@ -33,7 +33,7 @@ namespace EmailFinder.Controllers
 
         protected VerifyResult VerifyEmail(string email)
         {
-            var verifyResult = new VerifyResult() {Email = email, Service = EmailDiscoveryService.VerifyEmail.ToString()};
+            var verifyResult = new VerifyResult() { Email = email, Service = EmailDiscoveryService.VerifyEmail.ToString() };
 
             string apiUrl = "http://api.verify-email.org/api.php?";
             string apiUsername = "rmatyszewski";
@@ -44,12 +44,17 @@ namespace EmailFinder.Controllers
             {
                 using (webClient = new WebClient())
                 {
-                        string result = webClient.DownloadString(string.Format("{0}usr={1}&pwd={2}&check={3}", apiUrl, apiUsername, apiPassword, email));
-                        JObject objJSON = default(JObject);
-                        objJSON = JObject.Parse(result);
+                    string result = webClient.DownloadString(string.Format("{0}usr={1}&pwd={2}&check={3}", apiUrl, apiUsername, apiPassword, email));
+                    JObject objJSON = default(JObject);
+                    objJSON = JObject.Parse(result);
 
-                        if (objJSON["verify_status"] != null)
-                        verifyResult.IsValid = (Convert.ToBoolean(Convert.ToInt32(objJSON["verify_status"].ToString())));                        
+                    if (objJSON["verify_status"] != null)
+                        verifyResult.IsValid = (Convert.ToBoolean(Convert.ToInt32(objJSON["verify_status"].ToString())));
+
+                    if (objJSON["emails_verified"] != null)
+                        verifyResult.Limit = "limit: " + string.Format(objJSON["emails_verified"].ToString());
+
+                    verifyResult.Score = "score: none";
                 }
                 return verifyResult;
             }
@@ -71,12 +76,17 @@ namespace EmailFinder.Controllers
             {
                 using (webClient = new WebClient())
                 {
-                        string result = webClient.DownloadString(string.Format("{0}access_key={1}&email={2}", apiUrl, accessKey, email));
-                        JObject objJSON = default(JObject);
-                        objJSON = JObject.Parse(result);
+                    string result = webClient.DownloadString(string.Format("{0}access_key={1}&email={2}", apiUrl, accessKey, email));
+                    JObject objJSON = default(JObject);
+                    objJSON = JObject.Parse(result);
 
-                        if (objJSON["format_valid"] != null)
-                            verifyResult.IsValid = (Convert.ToBoolean(objJSON["format_valid"].ToString()));                    
+                    if (objJSON["format_valid"] != null)
+                        verifyResult.IsValid = (Convert.ToBoolean(objJSON["format_valid"].ToString()));
+
+                    verifyResult.Limit = "limit: none";
+
+                    if (objJSON["score"] != null)
+                        verifyResult.Score = "score: " + string.Format(objJSON["score"].ToString());
                 }
                 return verifyResult;
             }
@@ -92,19 +102,19 @@ namespace EmailFinder.Controllers
             {
                 name + "@" + domain,
                 surname + "@" + domain,
-                name + surname + "@" + domain,
-                name + "." + surname + "@" + domain,
-                name[0] + surname + "@" + domain,
-                name[0] + "." + surname + "@" + domain,
-                name + surname[0] + "@" + domain,
-                name + "." + surname[0] + "@" + domain,
-                name[0] + "" + surname[0] + "@" + domain,
-                surname + name + "@" + domain,
-                surname + "." + name + "@" + domain,
-                surname + name[0] + "@" + domain,
-                surname + "." + name[0] + "@" + domain,
-                name + "_" + surname + "@" + domain,
-                name[0] + "_" + surname + "@" + domain
+                name + surname + "@" + domain
+                //name + "." + surname + "@" + domain,
+                //name[0] + surname + "@" + domain,
+                //name[0] + "." + surname + "@" + domain,
+                //name + surname[0] + "@" + domain,
+                //name + "." + surname[0] + "@" + domain,
+                //name[0] + "" + surname[0] + "@" + domain,
+                //surname + name + "@" + domain,
+                //surname + "." + name + "@" + domain,
+                //surname + name[0] + "@" + domain,
+                //surname + "." + name[0] + "@" + domain,
+                //name + "_" + surname + "@" + domain,
+                //name[0] + "_" + surname + "@" + domain
             };
             return list;
         }

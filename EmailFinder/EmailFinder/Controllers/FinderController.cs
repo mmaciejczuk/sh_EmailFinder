@@ -69,14 +69,14 @@ namespace EmailFinder.Controllers
         {
             var verifyResult = new VerifyResult() { Email = email, Service = EmailDiscoveryService.MailboxLayer.ToString() };
 
-            string accessKey = "59a37991b326fe7201f628ea15f0347d";
+            string accessKey = "d56b001d85068207f9a1a7d532232536";
             string apiUrl = "https://apilayer.net/api/check?";
             WebClient webClient;
             try
             {
                 using (webClient = new WebClient())
                 {
-                    string result = webClient.DownloadString(string.Format("{0}access_key={1}&email={2}", apiUrl, accessKey, email));
+                    string result = webClient.DownloadString(string.Format("{0}access_key={1}&email={2}&smtp=1&format=1", apiUrl, accessKey, email));
                     JObject objJSON = default(JObject);
                     objJSON = JObject.Parse(result);
 
@@ -102,19 +102,19 @@ namespace EmailFinder.Controllers
             {
                 name + "@" + domain,
                 surname + "@" + domain,
-                name + surname + "@" + domain
-                //name + "." + surname + "@" + domain,
-                //name[0] + surname + "@" + domain,
-                //name[0] + "." + surname + "@" + domain,
-                //name + surname[0] + "@" + domain,
-                //name + "." + surname[0] + "@" + domain,
-                //name[0] + "" + surname[0] + "@" + domain,
-                //surname + name + "@" + domain,
-                //surname + "." + name + "@" + domain,
-                //surname + name[0] + "@" + domain,
-                //surname + "." + name[0] + "@" + domain,
-                //name + "_" + surname + "@" + domain,
-                //name[0] + "_" + surname + "@" + domain
+                name + surname + "@" + domain,
+                name + "." + surname + "@" + domain,
+                name[0] + surname + "@" + domain,
+                name[0] + "." + surname + "@" + domain,
+                name + surname[0] + "@" + domain,
+                name + "." + surname[0] + "@" + domain,
+                name[0] + "" + surname[0] + "@" + domain,
+                surname + name + "@" + domain,
+                surname + "." + name + "@" + domain,
+                surname + name[0] + "@" + domain,
+                surname + "." + name[0] + "@" + domain,
+                name + "_" + surname + "@" + domain,
+                name[0] + "_" + surname + "@" + domain
             };
             return list;
         }

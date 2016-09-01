@@ -11,8 +11,8 @@ namespace EmailFinder.Models
         {
             EmailDiscoveryServices = new List<Tuple<string, EmailDiscoveryService>>()
             {
-                new Tuple<string, EmailDiscoveryService>("verify-email.org", EmailDiscoveryService.MailboxLayer),
-                new Tuple<string, EmailDiscoveryService>("mailboxlayer.com", EmailDiscoveryService.VerifyEmail)
+                new Tuple<string, EmailDiscoveryService>("mailboxlayer.com", EmailDiscoveryService.MailboxLayer),
+                new Tuple<string, EmailDiscoveryService>("verify-email.org", EmailDiscoveryService.VerifyEmail)
             };
         }
     }
